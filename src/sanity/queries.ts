@@ -31,7 +31,6 @@ export const eventBySlugQuery = `
     introText,
     ticketLink,
     ticketLinkText,
-    htmlContent,
     content
   }
 `

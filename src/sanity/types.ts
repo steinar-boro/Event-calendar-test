@@ -20,7 +20,6 @@ export type SanityEvent = {
   introText?: string
   ticketLink?: string
   ticketLinkText?: string
-  htmlContent?: string
   content?: PortableTextBlock[]
 }
 

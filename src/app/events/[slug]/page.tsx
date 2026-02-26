@@ -96,16 +96,11 @@ export default async function EventPage({ params }: Props) {
           </a>
         )}
 
-        {event.htmlContent ? (
-          <div
-            className="prose prose-neutral max-w-none"
-            dangerouslySetInnerHTML={{ __html: event.htmlContent }}
-          />
-        ) : event.content && event.content.length > 0 ? (
+        {event.content && event.content.length > 0 && (
           <div className="prose prose-neutral max-w-none">
             <PortableText value={event.content} />
           </div>
-        ) : null}
+        )}
       </div>
     </main>
   )

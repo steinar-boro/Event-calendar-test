@@ -106,17 +106,10 @@ export const eventType = defineType({
       type: 'string',
     }),
     defineField({
-      name: 'htmlContent',
-      title: 'Innhold (HTML)',
-      type: 'text',
-      description: 'Importert HTML-innhold',
-    }),
-    defineField({
       name: 'content',
-      title: 'Innhold (riktekst)',
+      title: 'Innhold',
       type: 'array',
       of: [{ type: 'block' }],
-      description: 'Bruk dette for innhold laget direkte i Studio',
     }),
   ],
   orderings: [

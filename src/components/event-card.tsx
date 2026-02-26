@@ -32,11 +32,11 @@ export function EventCard({ event }: { event: SanityEvent }) {
           <span className="text-sm leading-tight">{month}</span>
         </div>
         <div className="flex gap-4 min-w-0 flex-1">
-          {(event.image || event.imageUrl) && (
+          {event.image && (
             <div className="hidden sm:block flex-shrink-0 w-24 h-16 rounded-md overflow-hidden relative">
               <Image
-                src={event.image ? urlFor(event.image).width(200).height(128).url() : event.imageUrl!}
-                alt={event.image?.alt ?? event.title}
+                src={urlFor(event.image).width(200).height(128).url()}
+                alt={event.image.alt ?? event.title}
                 fill
                 className="object-cover"
               />

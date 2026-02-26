@@ -32,12 +32,6 @@ export const eventType = defineType({
       ],
     }),
     defineField({
-      name: 'imageUrl',
-      title: 'Bilde (ekstern URL)',
-      type: 'url',
-      description: 'Brukes kun hvis bilde-feltet over er tomt',
-    }),
-    defineField({
       name: 'category',
       title: 'Tema',
       type: 'string',

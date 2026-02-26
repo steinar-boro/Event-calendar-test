@@ -11,7 +11,6 @@ export type SanityEvent = {
   title: string
   slug: string
   image?: SanityImage
-  imageUrl?: string
   category?: string
   areas?: string[]
   startDate: string

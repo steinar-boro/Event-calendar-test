@@ -35,11 +35,11 @@ export default async function EventPage({ params }: Props) {
           ← Tilbake til kalender
         </Link>
 
-        {(event.image || event.imageUrl) && (
+        {event.image && (
           <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-8">
             <Image
-              src={event.image ? urlFor(event.image).width(1200).height(675).url() : event.imageUrl!}
-              alt={event.image?.alt ?? event.title}
+              src={urlFor(event.image).width(1200).height(675).url()}
+              alt={event.image.alt ?? event.title}
               fill
               className="object-cover"
             />

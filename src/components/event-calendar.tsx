@@ -4,6 +4,7 @@ import * as React from "react"
 import { isWithinInterval, startOfDay, endOfDay } from "date-fns"
 import type { DateRange } from "react-day-picker"
 import type { SanityEvent } from "@/sanity/types"
+import { areaDisplayMap, categoryDisplayMap } from "@/sanity/types"
 import { EventCard } from "@/components/event-card"
 import { FilterChips } from "@/components/filter-chips"
 import { DateRangeFilter } from "@/components/date-range-filter"
@@ -16,18 +17,24 @@ type EventCalendarProps = {
 
 export function EventCalendar({ events }: EventCalendarProps) {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>(undefined)
-  const [selectedArea, setSelectedArea] = React.useState("All")
-  const [selectedCategory, setSelectedCategory] = React.useState("All")
+  const [selectedArea, setSelectedArea] = React.useState("all")
+  const [selectedCategory, setSelectedCategory] = React.useState("all")
   const [visibleCount, setVisibleCount] = React.useState(EVENTS_PER_PAGE)
 
-  const categories = React.useMemo(() => {
-    const unique = Array.from(new Set(events.map((e) => e.category)))
-    return ["All", ...unique]
+  const areaOptions = React.useMemo(() => {
+    const slugs = Array.from(new Set(events.flatMap((e) => e.areas ?? [])))
+    return [
+      { value: "all", label: "Alle" },
+      ...slugs.map((s) => ({ value: s, label: areaDisplayMap[s] ?? s })),
+    ]
   }, [events])
 
-  const areas = React.useMemo(() => {
-    const unique = Array.from(new Set(events.map((e) => e.area)))
-    return ["All", ...unique]
+  const categoryOptions = React.useMemo(() => {
+    const slugs = Array.from(new Set(events.map((e) => e.category).filter(Boolean) as string[]))
+    return [
+      { value: "all", label: "Alle" },
+      ...slugs.map((s) => ({ value: s, label: categoryDisplayMap[s] ?? s })),
+    ]
   }, [events])
 
   const filteredEvents = React.useMemo(() => {
@@ -52,8 +59,8 @@ export function EventCalendar({ events }: EventCalendarProps) {
         }
       }
 
-      if (selectedArea !== "All" && event.area !== selectedArea) return false
-      if (selectedCategory !== "All" && event.category !== selectedCategory) return false
+      if (selectedArea !== "all" && !event.areas?.includes(selectedArea)) return false
+      if (selectedCategory !== "all" && event.category !== selectedCategory) return false
 
       return true
     })
@@ -101,8 +108,8 @@ export function EventCalendar({ events }: EventCalendarProps) {
           <button
             onClick={() => {
               setDateRange(undefined)
-              setSelectedArea("All")
-              setSelectedCategory("All")
+              setSelectedArea("all")
+              setSelectedCategory("all")
             }}
             className="self-start px-5 py-2 rounded-full border border-border text-sm font-medium text-foreground hover:bg-accent transition-colors"
           >
@@ -117,14 +124,14 @@ export function EventCalendar({ events }: EventCalendarProps) {
 
           <FilterChips
             label="Område"
-            options={areas}
+            options={areaOptions}
             selected={selectedArea}
             onSelect={setSelectedArea}
           />
 
           <FilterChips
-            label="Kategori"
-            options={categories}
+            label="Tema"
+            options={categoryOptions}
             selected={selectedCategory}
             onSelect={setSelectedCategory}
           />

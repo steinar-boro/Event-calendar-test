@@ -3,11 +3,17 @@ export const eventsQuery = `
     _id,
     title,
     "slug": slug.current,
+    imageUrl,
+    imageAlt,
     category,
-    area,
+    areas,
     startDate,
     endDate,
-    location
+    location,
+    organizer,
+    introText,
+    ticketLink,
+    ticketLinkText
   }
 `
 
@@ -16,11 +22,18 @@ export const eventBySlugQuery = `
     _id,
     title,
     "slug": slug.current,
+    imageUrl,
+    imageAlt,
     category,
-    area,
+    areas,
     startDate,
     endDate,
     location,
+    organizer,
+    introText,
+    ticketLink,
+    ticketLinkText,
+    htmlContent,
     content
   }
 `

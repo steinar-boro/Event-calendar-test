@@ -19,14 +19,23 @@ export const eventType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'imageUrl',
-      title: 'Bilde (URL)',
-      type: 'url',
+      name: 'image',
+      title: 'Bilde',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Bildetekst (alt)',
+          type: 'string',
+        }),
+      ],
     }),
     defineField({
-      name: 'imageAlt',
-      title: 'Bildetekst (alt)',
-      type: 'string',
+      name: 'imageUrl',
+      title: 'Bilde (ekstern URL)',
+      type: 'url',
+      description: 'Brukes kun hvis bilde-feltet over er tomt',
     }),
     defineField({
       name: 'category',

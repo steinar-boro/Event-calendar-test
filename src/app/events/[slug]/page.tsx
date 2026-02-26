@@ -8,6 +8,7 @@ import { client } from "@/sanity/client"
 import { eventBySlugQuery } from "@/sanity/queries"
 import type { SanityEvent } from "@/sanity/types"
 import { categoryDisplayMap, areaDisplayMap } from "@/sanity/types"
+import { urlFor } from "@/sanity/image"
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -34,11 +35,11 @@ export default async function EventPage({ params }: Props) {
           ← Tilbake til kalender
         </Link>
 
-        {event.imageUrl && (
+        {(event.image || event.imageUrl) && (
           <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-8">
             <Image
-              src={event.imageUrl}
-              alt={event.imageAlt ?? event.title}
+              src={event.image ? urlFor(event.image).width(1200).height(675).url() : event.imageUrl!}
+              alt={event.image?.alt ?? event.title}
               fill
               className="object-cover"
             />

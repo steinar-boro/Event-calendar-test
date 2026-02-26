@@ -1,11 +1,17 @@
 import type { PortableTextBlock } from 'sanity'
 
+export type SanityImage = {
+  _type: 'image'
+  asset: { _ref: string; _type: 'reference' }
+  alt?: string
+}
+
 export type SanityEvent = {
   _id: string
   title: string
   slug: string
+  image?: SanityImage
   imageUrl?: string
-  imageAlt?: string
   category?: string
   areas?: string[]
   startDate: string

@@ -6,6 +6,7 @@ import { format } from "date-fns"
 import { nb } from "date-fns/locale"
 import type { SanityEvent } from "@/sanity/types"
 import { categoryDisplayMap, areaDisplayMap } from "@/sanity/types"
+import { urlFor } from "@/sanity/image"
 
 function formatEventDate(date: Date): string {
   return format(date, "d. MMMM yyyy", { locale: nb })
@@ -31,11 +32,11 @@ export function EventCard({ event }: { event: SanityEvent }) {
           <span className="text-sm leading-tight">{month}</span>
         </div>
         <div className="flex gap-4 min-w-0 flex-1">
-          {event.imageUrl && (
+          {(event.image || event.imageUrl) && (
             <div className="hidden sm:block flex-shrink-0 w-24 h-16 rounded-md overflow-hidden relative">
               <Image
-                src={event.imageUrl}
-                alt={event.imageAlt ?? event.title}
+                src={event.image ? urlFor(event.image).width(200).height(128).url() : event.imageUrl!}
+                alt={event.image?.alt ?? event.title}
                 fill
                 className="object-cover"
               />

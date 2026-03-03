@@ -12,9 +12,12 @@ export default defineConfig({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
 
-  plugins: [structureTool(), visionTool()],
+  plugins: [
+    structureTool({ name: 'structure' }),
+    visionTool(),
+  ],
 
-  defaultTool: 'desk',
+  defaultTool: 'structure',
 
   schema: {
     types: schemaTypes,

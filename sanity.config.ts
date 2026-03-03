@@ -14,6 +14,8 @@ export default defineConfig({
 
   plugins: [structureTool(), visionTool()],
 
+  defaultTool: 'desk',
+
   schema: {
     types: schemaTypes,
   },

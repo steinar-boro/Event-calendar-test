@@ -4,36 +4,33 @@ import * as React from "react"
 import { isWithinInterval, startOfDay, endOfDay } from "date-fns"
 import type { DateRange } from "react-day-picker"
 import type { SanityEvent } from "@/sanity/types"
-import { areaDisplayMap, categoryDisplayMap } from "@/sanity/types"
 import { EventCard } from "@/components/event-card"
 import { FilterChips } from "@/components/filter-chips"
 import { DateRangeFilter } from "@/components/date-range-filter"
 
 const EVENTS_PER_PAGE = 6
 
-type EventCalendarProps = {
-  events: SanityEvent[]
-}
-
-export function EventCalendar({ events }: EventCalendarProps) {
+export function EventCalendar({ events }: { events: SanityEvent[] }) {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>(undefined)
   const [selectedArea, setSelectedArea] = React.useState("all")
   const [selectedCategory, setSelectedCategory] = React.useState("all")
   const [visibleCount, setVisibleCount] = React.useState(EVENTS_PER_PAGE)
 
   const areaOptions = React.useMemo(() => {
-    const slugs = Array.from(new Set(events.flatMap((e) => e.areas ?? [])))
+    const seen = new Map<string, string>()
+    events.forEach((e) => e.areas?.forEach((a) => seen.set(a._id, a.title)))
     return [
       { value: "all", label: "Alle" },
-      ...slugs.map((s) => ({ value: s, label: areaDisplayMap[s] ?? s })),
+      ...Array.from(seen.entries()).map(([id, title]) => ({ value: id, label: title })),
     ]
   }, [events])
 
   const categoryOptions = React.useMemo(() => {
-    const slugs = Array.from(new Set(events.map((e) => e.category).filter(Boolean) as string[]))
+    const seen = new Map<string, string>()
+    events.forEach((e) => { if (e.category) seen.set(e.category._id, e.category.title) })
     return [
       { value: "all", label: "Alle" },
-      ...slugs.map((s) => ({ value: s, label: categoryDisplayMap[s] ?? s })),
+      ...Array.from(seen.entries()).map(([id, title]) => ({ value: id, label: title })),
     ]
   }, [events])
 
@@ -44,23 +41,15 @@ export function EventCalendar({ events }: EventCalendarProps) {
 
       if (dateRange?.from && dateRange?.to) {
         const inRange =
-          isWithinInterval(startDate, {
-            start: startOfDay(dateRange.from),
-            end: endOfDay(dateRange.to),
-          }) ||
-          isWithinInterval(endDate, {
-            start: startOfDay(dateRange.from),
-            end: endOfDay(dateRange.to),
-          })
+          isWithinInterval(startDate, { start: startOfDay(dateRange.from), end: endOfDay(dateRange.to) }) ||
+          isWithinInterval(endDate, { start: startOfDay(dateRange.from), end: endOfDay(dateRange.to) })
         if (!inRange) return false
       } else if (dateRange?.from) {
-        if (startDate < startOfDay(dateRange.from) && endDate < startOfDay(dateRange.from)) {
-          return false
-        }
+        if (startDate < startOfDay(dateRange.from) && endDate < startOfDay(dateRange.from)) return false
       }
 
-      if (selectedArea !== "all" && !event.areas?.includes(selectedArea)) return false
-      if (selectedCategory !== "all" && event.category !== selectedCategory) return false
+      if (selectedArea !== "all" && !event.areas?.some((a) => a._id === selectedArea)) return false
+      if (selectedCategory !== "all" && event.category?._id !== selectedCategory) return false
 
       return true
     })
@@ -75,7 +64,6 @@ export function EventCalendar({ events }: EventCalendarProps) {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-      {/* Left side: Event list */}
       <div className="flex-1 min-w-0">
         {visibleEvents.length === 0 ? (
           <div className="py-12 text-center text-muted-foreground">
@@ -89,7 +77,6 @@ export function EventCalendar({ events }: EventCalendarProps) {
             ))}
           </div>
         )}
-
         {hasMore && (
           <div className="mt-6">
             <button
@@ -102,39 +89,17 @@ export function EventCalendar({ events }: EventCalendarProps) {
         )}
       </div>
 
-      {/* Right side: Filters */}
       <aside className="w-full lg:w-80 flex-shrink-0">
         <div className="lg:sticky lg:top-8 flex flex-col gap-8">
           <button
-            onClick={() => {
-              setDateRange(undefined)
-              setSelectedArea("all")
-              setSelectedCategory("all")
-            }}
+            onClick={() => { setDateRange(undefined); setSelectedArea("all"); setSelectedCategory("all") }}
             className="self-start px-5 py-2 rounded-full border border-border text-sm font-medium text-foreground hover:bg-accent transition-colors"
           >
             Reset filter
           </button>
-
-          <DateRangeFilter
-            dateRange={dateRange}
-            onDateRangeChange={setDateRange}
-            events={events}
-          />
-
-          <FilterChips
-            label="Område"
-            options={areaOptions}
-            selected={selectedArea}
-            onSelect={setSelectedArea}
-          />
-
-          <FilterChips
-            label="Tema"
-            options={categoryOptions}
-            selected={selectedCategory}
-            onSelect={setSelectedCategory}
-          />
+          <DateRangeFilter dateRange={dateRange} onDateRangeChange={setDateRange} events={events} />
+          <FilterChips label="Område" options={areaOptions} selected={selectedArea} onSelect={setSelectedArea} />
+          <FilterChips label="Tema" options={categoryOptions} selected={selectedCategory} onSelect={setSelectedCategory} />
         </div>
       </aside>
     </div>

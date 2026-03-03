@@ -34,38 +34,14 @@ export const eventType = defineType({
     defineField({
       name: 'category',
       title: 'Tema',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Konferanse', value: 'konferanse' },
-          { title: 'Seminar', value: 'seminar' },
-          { title: 'Webinar', value: 'webinar' },
-          { title: 'Fagdag', value: 'fagdag' },
-          { title: 'Forum', value: 'forum' },
-          { title: 'Workshop', value: 'workshop' },
-          { title: 'Forretningsutvikling', value: 'forretningsutvikling' },
-        ],
-      },
+      type: 'reference',
+      to: [{ type: 'category' }],
     }),
     defineField({
       name: 'areas',
       title: 'Områder',
       type: 'array',
-      of: [
-        {
-          type: 'string',
-          options: {
-            list: [
-              { title: 'ÅKP', value: 'aakp' },
-              { title: 'Blue Maritime Cluster', value: 'blue-maritime-cluster' },
-              { title: 'Blue Legasea', value: 'blue-legasea' },
-              { title: 'Norsk Katapult Digital', value: 'norsk-katapult-digital' },
-              { title: 'Mafoss', value: 'mafoss' },
-              { title: 'Samarbeidspartnere', value: 'samarbeidspartnere' },
-            ],
-          },
-        },
-      ],
+      of: [{ type: 'reference', to: [{ type: 'area' }] }],
     }),
     defineField({
       name: 'startDate',

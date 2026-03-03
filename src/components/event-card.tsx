@@ -5,24 +5,13 @@ import Image from "next/image"
 import { format } from "date-fns"
 import { nb } from "date-fns/locale"
 import type { SanityEvent } from "@/sanity/types"
-import { categoryDisplayMap, areaDisplayMap } from "@/sanity/types"
 import { urlFor } from "@/sanity/image"
-
-function formatEventDate(date: Date): string {
-  return format(date, "d. MMMM yyyy", { locale: nb })
-}
-
-function formatEventTime(date: Date): string {
-  return format(date, "HH:mm")
-}
 
 export function EventCard({ event }: { event: SanityEvent }) {
   const startDate = new Date(event.startDate)
   const endDate = new Date(event.endDate)
   const day = format(startDate, "d.")
   const month = format(startDate, "MMM", { locale: nb })
-  const categoryLabel = event.category ? (categoryDisplayMap[event.category] ?? event.category) : null
-  const areaLabels = event.areas?.map((a) => areaDisplayMap[a] ?? a) ?? []
 
   return (
     <Link href={`/events/${event.slug}`} className="block group">
@@ -43,14 +32,14 @@ export function EventCard({ event }: { event: SanityEvent }) {
             </div>
           )}
           <div className="flex flex-col gap-1 min-w-0">
-            <div className="flex flex-wrap gap-1">
-              {categoryLabel && (
-                <span className="text-sm font-medium text-primary">{categoryLabel}</span>
+            <div className="flex flex-wrap gap-1 text-sm">
+              {event.category && (
+                <span className="font-medium text-primary">{event.category.title}</span>
               )}
-              {areaLabels.length > 0 && (
-                <span className="text-sm text-muted-foreground">
-                  {categoryLabel && "· "}
-                  {areaLabels.join(", ")}
+              {event.areas && event.areas.length > 0 && (
+                <span className="text-muted-foreground">
+                  {event.category && "· "}
+                  {event.areas.map((a) => a.title).join(", ")}
                 </span>
               )}
             </div>
@@ -61,8 +50,8 @@ export function EventCard({ event }: { event: SanityEvent }) {
               <p className="text-sm text-muted-foreground line-clamp-2">{event.introText}</p>
             )}
             <p className="text-sm text-muted-foreground">
-              {formatEventDate(startDate)} kl. {formatEventTime(startDate)} –{" "}
-              {formatEventDate(endDate)} kl. {formatEventTime(endDate)}
+              {format(startDate, "d. MMMM yyyy", { locale: nb })} kl. {format(startDate, "HH:mm")} –{" "}
+              {format(endDate, "d. MMMM yyyy", { locale: nb })} kl. {format(endDate, "HH:mm")}
             </p>
             {event.location && (
               <p className="text-sm text-muted-foreground">• {event.location}</p>

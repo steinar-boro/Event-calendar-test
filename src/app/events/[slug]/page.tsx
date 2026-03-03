@@ -7,7 +7,6 @@ import { PortableText } from "@portabletext/react"
 import { client } from "@/sanity/client"
 import { eventBySlugQuery } from "@/sanity/queries"
 import type { SanityEvent } from "@/sanity/types"
-import { categoryDisplayMap, areaDisplayMap } from "@/sanity/types"
 import { urlFor } from "@/sanity/image"
 
 type Props = {
@@ -22,8 +21,8 @@ export default async function EventPage({ params }: Props) {
 
   const startDate = new Date(event.startDate)
   const endDate = new Date(event.endDate)
-  const categoryLabel = event.category ? (categoryDisplayMap[event.category] ?? event.category) : null
-  const areaLabels = event.areas?.map((a) => areaDisplayMap[a] ?? a) ?? []
+  const categoryLabel = event.category?.title ?? null
+  const areaLabels = event.areas?.map((a) => a.title) ?? []
 
   return (
     <main className="min-h-screen bg-background">
